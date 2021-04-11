@@ -1,21 +1,39 @@
 <template>
-  <div class="login">
-    <el-card class="login-form-layout">
-      <el-form :model="loginForm" ref="loginForm" :rules="loginRules">
-        <h2>喵喵商城后台管理系统</h2>
+  <div class="register">
+    <el-card class="registerForm-form-layout">
+      <el-form :model="registerForm" ref="registerForm" :rules="registerRules">
+        <h2>喵喵商城管理员注册</h2>
         <el-form-item prop="username">
           <el-input
-            v-model="loginForm.username"
-            name="loginForm.username"
+            v-model="registerForm.username"
+            name="registerForm.username"
             placeholder="请输入用户名"
+            auto-complete="on"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="nickName">
+          <el-input
+            v-model="registerForm.nickName"
+            name="registerForm.nickName"
+            placeholder="请输入姓名"
+            auto-complete="on"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="email">
+          <el-input
+            v-model="registerForm.email"
+            name="registerForm.email"
+            placeholder="请输入邮箱"
             auto-complete="on"
           ></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
           <el-input
-            v-model="loginForm.password"
-            name="password"
+            v-model="registerForm.password"
+            name="registerForm.password"
             placeholder="请输入密码"
             auto-complete="on"
             :type="pwdType"
@@ -24,13 +42,25 @@
           </el-input>
         </el-form-item>
 
+        <el-form-item prop="note">
+          <el-input
+            v-model="registerForm.note"
+            name="registerForm.note"
+            placeholder="备注"
+            auto-complete="on"
+            type="textarea"
+            :rows="5"
+            style="width: 300px"
+          ></el-input>
+        </el-form-item>
+
         <el-form-item>
           <el-button
             style="width: 25%"
             type="primary"
             :loading="loading"
             @click="onSubmit"
-            >登录</el-button
+            >确定</el-button
           >
         </el-form-item>
       </el-form>
@@ -39,10 +69,8 @@
 </template>
 
 <script>
-import { isValidUsername } from "../../utils/validate";
-import { setCookie, getCookie } from "../../utils/support";
-//import { getCookie } from "../../utils/support";
-
+import { isValidUsername } from "../../../utils/validate";
+import {createAdmin} from "../../../api/login"
 export default {
   name: "login",
   data() {
@@ -61,12 +89,16 @@ export default {
       }
     };
     return {
-      loginForm: {
+      registerForm: {
         username: "",
+        nickName: "",
+        note: "",
+        email: "",
         password: "",
+        icon: "cnm",
       },
       //表单验证
-      loginRules: {
+      registerRules: {
         username: [
           {
             required: true,
@@ -87,24 +119,7 @@ export default {
     };
   },
 
-  created() {
-    this.loginForm.username = getCookie("username");
-    this.loginForm.password = getCookie("username");
-    //console.log(this.loginForm.username, this.loginForm.password);
-    if (
-      this.loginForm.username === undefined ||
-      this.loginForm.username == null ||
-      this.loginForm.username === ""
-    ) {
-      this.loginForm.username = "admin";
-    }
-    if (
-      this.loginForm.password === undefined ||
-      this.loginForm.password == null
-    ) {
-      this.loginForm.password = "";
-    }
-  },
+  
 
   methods: {
     showPwd() {
@@ -116,32 +131,20 @@ export default {
     },
 
     onSubmit() {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          this.$store
-            .dispatch("Login", this.loginForm)
-            .then(() => {
-              this.loading = false;
-              setCookie("username", this.loginForm.username, 15);
-              setCookie("password", this.loginForm.password, 15);
-              this.$router.push({ path: "/" });
+        createAdmin(this.registerForm).then(() => {
+            this.$message({
+                message:'注册成功',
+                type:'success'
             })
-            .catch(() => {
-              this.loading = false;
-            });
-        } else {
-          console.log("参数验证不合法！");
-          return false;
-        }
-      });
-    },
+        })
+    }
+   
   },
 };
 </script>
 
 <style scoped>
-.login-form-layout {
+.registerForm-form-layout {
   position: absolute;
   left: 0;
   right: 0;

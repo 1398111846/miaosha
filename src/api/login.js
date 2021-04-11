@@ -11,6 +11,13 @@ export function login(username, password) {
     })
 }
 
+export function createAdmin(data) {
+    return request({
+        url: '/admin/register',
+        method: 'POST',
+        data: data
+    })
+}
 export function getInfo() {
     return request({
       url: '/admin/info',

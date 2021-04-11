@@ -1,3 +1,3 @@
 export function isValidUsername(str) {
-    return str.trim().length >= 3
+    return str.trim().length >= 2
 }
