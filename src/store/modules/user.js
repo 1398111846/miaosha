@@ -1,7 +1,8 @@
 import { login } from '../../api/login'
+import { getToken, setToken } from '../../utils/auth'
 const user = {
     state: {
-        token: '',
+        token: getToken(),
         name: '',
         avatar: '',
         roles: []
@@ -29,10 +30,12 @@ const user = {
             return new Promise((resolve, reject) => {
                 login(username, userInfo.password).then(response => {
                     const data = response.data
-                    const tokenStr = data.tokenHead + data.token
+                    //console.log(data)
+                    //const tokenStr = data.data.tokenHead + data.data.token
+                    //console.log(tokenStr)
                     //setToken(tokenStr)
-                    commit('SET_TOKEN', tokenStr)
-                    console.log(tokenStr)
+                    commit('SET_TOKEN', data.data.token)
+                    setToken(data.data.token)
                     resolve()
                 }).catch(error => {
                     reject(error)

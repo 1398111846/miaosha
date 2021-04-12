@@ -89,7 +89,7 @@ export default {
 
   created() {
     this.loginForm.username = getCookie("username");
-    this.loginForm.password = getCookie("username");
+    this.loginForm.password = getCookie("password");
     //console.log(this.loginForm.username, this.loginForm.password);
     if (
       this.loginForm.username === undefined ||
